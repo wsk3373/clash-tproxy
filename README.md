@@ -1,28 +1,54 @@
-# docker_global_transparent_proxy
-使用clash +docker 进行路由转发实现全局透明代理
+# clash-transparent-proxy-docker
 
-## 食用方法
+使用 Docker 和 clash 容器进行透明代理
+
+## 特点
+
+- [x] IPv4 TCP 透明代理
+- [x] IPv4 UDP 透明代理
+- [x] FULL CONE NAT
+
+## 使用方法
+
+### docker
+
 1. 开启混杂模式
 
-    `ip link set eth0 promisc on`
+    ```bash
+    ip a # 查看你的网卡名字，Openwrt一般是br-lan
+    ip link set <你的网卡名> promisc on
+    ```
 
-1. docker创建网络,注意将网段改为你自己的
+2. Docker 创建 macvlan 网络
 
-    `docker network create -d macvlan --subnet=192.168.1.0/24 --gateway=192.168.1.1 -o parent=eth0 macnet`
+    ```bash
+    docker network create -d macvlan --subnet=<局域网的CIDR地址块> --gateway=<局域网的网关> -o parent=<网卡名> <macvlan网络名>
+    ```
 
-1. 提前准备好正确的clash config , 必须打开redir在7892, 以及dns在53端口
+3. 编写好 clash 的配置文件，必须将 Tproxy 端口设置为 7893, DNS端口设置为 53
 
-1. 运行容器
+4. 运行容器
 
-    `sudo docker run --name clash_tp -d -v /your/path/clash_config:/clash_config  --network macnet --ip 192.168.1.100 --privileged zhangyi2018/clash_transparent_proxy`
+    ```bash
+    docker run --name clash -d -v /your/path/config.yaml:/root/.config/clash/config.yaml  --network <macvlan网络名> --ip <容器IP地址> --cap-add=NET_ADMIN clarkecheng/clash-transparent-proxy-docker
+    ```
 
-1. 将手机/电脑等客户端 网关设置为容器ip,如192.168.1.100 ,dns也设置成这个
+5. 将手机/电脑等客户端，网关和DNS设置为容器 IP
 
+### Docker Compose
 
-## 附注 : 
+1. 确保你的 docker-compose 版本是 1.27 以上
 
-1. 只要规则设置的对, 支持国内直连,国外走代理
-1. 只在linux 测试过,win没试过, mac是不行, 第二步创建网络不行, docker自己的问题, 说不定以后哪天docker for mac支持了?
+2. 下载 docker-compose.yml
 
-## 构建方法
-`docker buildx build --platform linux/386,linux/amd64,linux/arm/v7,linux/arm64/v8 -t zhangyi2018/clash_transparent_proxy:1.0.7 -t zhangyi2018/clash_transparent_proxy:latest . --push`
+    ```bash
+    wget https://raw.githubusercontent.com/ClarkeCheng/clash-transparent-proxy-docker/master/docker-compose.yml
+    ```
+
+3. 修改参数
+
+4. 执行命令以启动容器
+
+    ```bash
+    docker-compose up -d
+    ```
