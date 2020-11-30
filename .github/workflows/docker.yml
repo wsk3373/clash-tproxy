@@ -6,6 +6,7 @@ on:
     tags:
       - '*'
     paths-ignore:
+      - docker-compose.yml
       - README.md
       - LICENSE
 jobs:
