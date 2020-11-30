@@ -1,0 +1,26 @@
+version: "3"
+services:
+  clash:
+    cap_add:
+      - NET_ADMIN
+    container_name: clash
+    image: clarkecheng/clash_transparent_proxy
+    networks: 
+      clash_macvlan:
+        ipv4_address: 192.168.0.2 # 改成你想要的 IP 地址
+    restart: always
+    volumes:
+      - ./clash/config.yaml:/root/.config/clash/config.yaml # 注意冒号前面改成你的clash配置文件的路径
+networks:
+  clash_macvlan:
+    driver: macvlan
+    driver_opts:
+      parent: br-lan # 要桥接的网卡
+    ipam:
+      driver: default
+      config:
+        - subnet: "192.168.0.0/24" # 改成你的局域网的CIDR地址块
+          gateway: 192.168.0.1 # 改成你的网关
+  # br0:
+  #   external: # 如果你使用的是外部的 macvlan 网络，在这里引入
+  #     name: br0
