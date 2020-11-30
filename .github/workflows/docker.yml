@@ -6,8 +6,8 @@ on:
     tags:
       - '*'
     paths-ignore:
-    - README.md
-    - LICENSE
+      - README.md
+      - LICENSE
 jobs:
   build:
     name: Build
