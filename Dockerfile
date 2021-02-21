@@ -5,7 +5,7 @@ RUN apk add --no-cache make git && \
     git clone https://github.com/Dreamacro/clash.git /clash-src
 
 WORKDIR /clash-src
-RUN git checkout v1.4.0 && \
+RUN git checkout v1.4.1 && \
     go mod download
 
 COPY Makefile /clash-src/Makefile
