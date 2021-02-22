@@ -16,5 +16,6 @@ iptables -t mangle -A clash -p tcp -j TPROXY --on-port 7893 --tproxy-mark 0x1
 iptables -t mangle -A clash -p udp -j TPROXY --on-port 7893 --tproxy-mark 0x1
 iptables -t mangle -A PREROUTING -p tcp -j clash
 iptables -t mangle -A PREROUTING -p udp -j clash
+iptables -t nat -I POSTROUTING -o eth0 -j MASQUERADE
 
 exec "$@"
