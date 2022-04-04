@@ -17,6 +17,8 @@ RUN apk add --no-cache \
     wget -O clash.gz https://github.com/Dreamacro/clash/releases/download/v1.10.0/clash-linux-amd64-v1.10.0.gz && \
     gzip -d clash.gz && \
     chmod a+x clash && \
+    wget -O clash-dashboard.zip https://github.com/Dreamacro/clash-dashboard/archive/refs/heads/gh-pages.zip && \
+    unzip clash-dashboard.zip && rm clash-dashboard.zip && mv clash-dashboard-gh-pages clash-dashboard && \
     chmod a+x /usr/local/bin/entrypoint.sh
 
 ENTRYPOINT ["entrypoint.sh"]
