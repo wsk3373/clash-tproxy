@@ -1,21 +1,8 @@
-FROM golang:alpine as builder
-
-RUN apk add --no-cache make git && \
-    wget -O /Country.mmdb https://github.com/Dreamacro/maxmind-geoip/releases/latest/download/Country.mmdb && \
-    git clone https://github.com/Dreamacro/clash.git /clash-src
-
-WORKDIR /clash-src
-RUN git checkout v1.4.1 && \
-    go mod download
-
-COPY Makefile /clash-src/Makefile
-RUN make current
-
 FROM alpine:latest
 ENV TZ=Asia/Shanghai
-# RUN echo "https://mirror.tuna.tsinghua.edu.cn/alpine/v3.11/main/" > /etc/apk/repositories
-COPY --from=builder /clash-src/bin/clash /usr/local/bin/
-COPY --from=builder /Country.mmdb /root/.config/clash/
+WORKDIR /root/.config/clash/
+
+# RUN echo "https://mirror.tuna.tsinghua.edu.cn/alpine/v3.15/main/" > /etc/apk/repositories
 COPY entrypoint.sh /usr/local/bin/
 COPY config.yaml /root/.config/clash/
 RUN apk add --no-cache \
@@ -24,9 +11,13 @@ RUN apk add --no-cache \
     curl \
     iptables  \
     bash-doc  \
-    bash-completion  \
+    bash-completion && \
     rm -rf /var/cache/apk/* && \
+    wget -O Country.mmdb https://github.com/Dreamacro/maxmind-geoip/releases/latest/download/Country.mmdb && \
+    wget -O clash.gz https://github.com/Dreamacro/clash/releases/download/v1.10.0/clash-linux-amd64-v1.10.0.gz && \
+    gzip -d clash.gz && \
+    chmod a+x clash && \
     chmod a+x /usr/local/bin/entrypoint.sh
 
 ENTRYPOINT ["entrypoint.sh"]
-CMD ["clash"]
+CMD ["./clash"]
