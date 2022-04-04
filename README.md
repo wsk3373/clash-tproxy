@@ -1,4 +1,4 @@
-# clash-transparent-proxy-docker
+# clash-tproxy
 
 使用 Docker 和 clash 容器进行透明代理
 
@@ -30,7 +30,7 @@
 4. 运行容器
 
     ```bash
-    docker run --name clash -d -v /your/path/config.yaml:/root/.config/clash/config.yaml  --network <macvlan网络名> --ip <容器IP地址> --cap-add=NET_ADMIN clarkecheng/clash-transparent-proxy-docker
+    docker run --name clash -d -v /your/path/config.yaml:/root/.config/clash/config.yaml  --network <macvlan网络名> --ip <容器IP地址> --cap-add=NET_ADMIN feikeke/clash-tproxy
     ```
 
 5. 将手机/电脑等客户端，网关和DNS设置为容器 IP
@@ -42,7 +42,7 @@
 2. 下载 docker-compose.yml
 
     ```bash
-    wget https://raw.githubusercontent.com/ClarkeCheng/clash-transparent-proxy-docker/master/docker-compose.yml
+    wget https://raw.githubusercontent.com/fei-ke/clash-tproxy/master/docker-compose.yml
     ```
 
 3. 修改参数
