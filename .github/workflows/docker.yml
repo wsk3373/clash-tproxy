@@ -29,12 +29,12 @@ jobs:
         id: docker_image_tag
         with:
           cond: ${{ steps.vars.outputs.branch == 'master' }}
-          if_true: "clarkecheng/clash-transparent-proxy-docker:latest"
-          if_false: "clarkecheng/clash-transparent-proxy-docker:${{ steps.vars.outputs.tag }}"
+          if_true: "feikeke/clash-tproxy:latest"
+          if_false: "feikeke/clash-tproxy:${{ steps.vars.outputs.tag }}"
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
         with:
-          platforms: all
+          platforms: linux/amd64
       - name: Set up docker buildx
         id: buildx
         uses: docker/setup-buildx-action@v1
@@ -49,6 +49,6 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64
+          platforms: linux/amd64
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.docker_image_tag.outputs.value }}
