@@ -1,5 +1,5 @@
 #!/bin/bash
-
+sysctl -w net.ipv4.ip_forward=1
 ip rule add fwmark 0x1 lookup 100
 ip route add local default dev lo table 100
 iptables -t mangle -N clash
