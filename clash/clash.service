@@ -1,0 +1,20 @@
+[Unit]
+Description=Clash TProxy
+After=network.target
+
+[Service]
+Type=simple
+User=clash
+Group=clash
+CapabilityBoundingSet=CAP_NET_ADMIN CAP_NET_BIND_SERVICE CAP_NET_RAW
+AmbientCapabilities=CAP_NET_ADMIN CAP_NET_BIND_SERVICE CAP_NET_RAW
+Restart=on-failure
+
+ExecStartPre=+/usr/bin/bash /etc/clash/clean.sh
+ExecStart=/usr/bin/clash -d /etc/clash
+ExecStartPost=+/usr/bin/bash /etc/clash/iptables.sh
+
+ExecStopPost=+/usr/bin/bash /etc/clash/clean.sh
+
+[Install]
+WantedBy=multi-user.target
